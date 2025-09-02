@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Daily Timeline</title>
+<style>
+  body {
+  font-family: Arial;
+  display: flex;
+  flex-direction: column; /* 위에서 아래로 배치 */
+  align-items: center;    /* 가로 가운데 정렬 */
+  justify-content: flex-start; /* 세로는 위쪽 정렬 (원하면 center로 바꿀 수 있음) */
+  min-height: 100vh;      /* 화면 전체 높이 */
+  margin: 0;
+}
+
+  .timeline { display: grid; 
+    grid-template-columns: 50px repeat(6, 50px); 
+    gap: 1px; 
+    margin: 20px 20px 0 20px; 
+}
+  .hour { 
+    text-align: right; 
+    padding-right: 5px; 
+}
+  .block { 
+    width: 50px; 
+    height: 30px; 
+    background-color: #eee; 
+    position: relative; 
+    cursor: pointer; 
+    border-right: 1px solid #eee; 
+}
+  .daily { background-color: #d3d3d3; } /* 일상 */
+  .focus { background-color: #7ec850; } /* 집중 */
+  .productive { background-color: #20b2aa; } /* 생산 */
+  .waste { background-color: #f07c7c; } /* 낭비 */
+
+  .tooltip { visibility:hidden; 
+    background:black; 
+    color:#fff; 
+    padding:3px 6px; 
+    border-radius:3px; 
+    position:absolute; 
+    top:-25px; 
+    left:0; 
+    white-space:nowrap; 
+    font-size:12px; 
+}
+  .block:hover .tooltip { visibility:visible; }
+  #datePicker { margin: 20px; font-size: 16px; }
+</style>
+</head>
+<body>
+
+
+<h2>Daily Timeline</h2>
+<div class="date-row">
+  <input type="date" id="datePicker" />
+  <span id="weekday"></span>
+</div>
+<div class="timeline" id="timeline"></div>
+
+
+<script>
+const data = [
+  {date:"2025-09-02", start:"10:00", end:"10:30", type:"daily", desc:"샤워"},
+  {date:"2025-09-02", start:"10:30", end:"11:28", type:"daily", desc:"아침"},
+  {date:"2025-09-02", start:"11:28", end:"12:09", type:"focus", desc:"2024 볼드 완!"},
+  {date:"2025-09-02", start:"12:09", end:"12:19", type:"daily", desc:"휴식"},
+  {date:"2025-09-02", start:"12:19", end:"12:41", type:"focus", desc:"2023 기출 FTP까지 공부"},
+  {date:"2025-09-02", start:"13:01", end:"13:21", type:"focus", desc:"2023 기출 볼드 복습 완"},
+  {date:"2025-09-02", start:"13:21", end:"13:49", type:"productive", desc:"채용공고 확인"},
+  {date:"2025-09-02", start:"13:49", end:"15:14", type:"focus", desc:"sql select 문제 풂"},
+  {date:"2025-09-02", start:"15:14", end:"15:34", type:"daily", desc:"휴식"},
+  {date:"2025-09-02", start:"15:34", end:"16:00", type:"focus", desc:"sql select 문제 계속 푸는 중"},
+  {date:"2025-09-02", start:"16:00", end:"17:03", type:"focus", desc:"select 문제 레벨 3, 4, 5 푸는 중"},
+  {date:"2025-09-02", start:"17:03", end:"19:15", type:"daily", desc:"저녁 식사 + 일본어 공부"},
+  {date:"2025-09-02", start:"19:15", end:"21:15", type:"focus", desc:"with recursive 공부, group by 카테고리"},
+  {date:"2025-09-03", start:"09:00", end:"09:30", type:"daily", desc:"기상"},
+  {date:"2025-09-03", start:"09:30", end:"10:00", type:"focus", desc:"공부 시작"},
+  {date:"2025-09-03", start:"10:00", end:"11:00", type:"productive", desc:"개인 프로젝트 작업"}
+];
+
+
+function timeToIndex(time) {
+  const [h, m] = time.split(":").map(Number);
+  return h*6 + Math.floor(m/10);
+}
+
+function getWeekday(dateStr) {
+  const days = ["일", "월", "화", "수", "목", "금", "토"];
+  const date = new Date(dateStr);
+  return days[date.getDay()];
+}
+
+
+function renderTimeline(selectedDate) {
+  const timelineEl = document.getElementById("timeline");
+  timelineEl.innerHTML = ""; // 기존 타임라인 초기화
+
+    // 요일 표시
+  document.getElementById("weekday").textContent = 
+    `(${getWeekday(selectedDate)})`;
+
+  const filteredData = data.filter(d => d.date === selectedDate);
+
+  for(let hour=7; hour<=24; hour++){
+    const hourEl = document.createElement("div");
+    hourEl.className = "hour";
+    hourEl.textContent = hour;
+    timelineEl.appendChild(hourEl);
+
+    for(let i=0; i<6; i++){
+      const block = document.createElement("div");
+      block.className = "block";
+      const blockIndex = hour*6 + i;
+
+      filteredData.forEach(d=>{
+        const startIndex = timeToIndex(d.start);
+        const endIndex = timeToIndex(d.end);
+        if(blockIndex >= startIndex && blockIndex < endIndex){
+          block.className = "block " + d.type;
+          const tooltip = document.createElement("span");
+          tooltip.className = "tooltip";
+          tooltip.textContent = d.desc + ` (${d.start}~${d.end})`;
+          block.appendChild(tooltip);
+        }
+      });
+
+      timelineEl.appendChild(block);
+    }
+  }
+}
+
+// 날짜 선택 이벤트
+document.getElementById("datePicker").addEventListener("change", (e)=>{
+  renderTimeline(e.target.value);
+});
+
+// 기본적으로 오늘 날짜 표시
+const today = new Date().toISOString().slice(0,10);
+document.getElementById("datePicker").value = today;
+renderTimeline(today);
+
+
+function changeDate(days) {
+  const currentDate = new Date(datePicker.value);
+  currentDate.setDate(currentDate.getDate() + days); // days만큼 이동
+  const newDateStr = currentDate.toISOString().slice(0,10);
+  datePicker.value = newDateStr;
+  renderTimeline(newDateStr);
+}
+
+
+// 키보드 좌우 화살표로 날짜 이동
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft") {
+    changeDate(-1); // ← 키 → 이전 날짜
+  } else if (e.key === "ArrowRight") {
+    changeDate(1);  // → 키 → 다음 날짜
+  }
+});
+
+</script>
+</body>
+</html>
