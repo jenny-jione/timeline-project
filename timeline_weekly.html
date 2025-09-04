@@ -71,6 +71,25 @@ h2 { margin-bottom: 20px; }
 }
 .block:hover .tooltip { visibility: visible; }
 
+.block-text-area {
+  margin-top: 5px;
+  width: 100%;       /* 부모 컬럼 너비에 맞춤 */
+  min-height: 20px;  
+  text-align: center;
+  font-size: 12px;
+  color: black;
+  word-break: break-word; /* 단어가 길어도 줄바꿈 */
+  white-space: pre-wrap;
+}
+
+.block-text-area.daily { background-color: #ADD8E6; }
+.block-text-area.focus { background-color: #7EC850; }
+.block-text-area.productive { background-color: #20B2AA; }
+.block-text-area.mind { background-color: #b1b1df; }
+.block-text-area.waste { background-color: #F07C7C; }
+.block-text-area.schedule { background-color: #788dca; }
+.block-text-area.other { background-color: #acacac; }
+
 
 </style>
 </head>
@@ -145,12 +164,30 @@ function renderDay(dateStr, label) {
           tooltip.className = "tooltip";
           tooltip.textContent = d.desc + ` (${d.start}~${d.end})`;
           block.appendChild(tooltip);
+
+          // 블록 아래 영역에 표시할 텍스트 이벤트
+          block.addEventListener("mouseenter", () => {
+            textArea.textContent = `${d.start}~${d.end}\n` + d.desc;
+            // 블록 클래스에 맞춰 텍스트 배경색 적용
+            textArea.className = "block-text-area " + d.type; 
+          });
+          block.addEventListener("mouseleave", () => {
+            textArea.textContent = "";
+            textArea.className = "block-text-area"; // 배경색 초기화
+
+          });
         }
       });
 
       timelineEl.appendChild(block);
     }
   }
+
+  // 블록 아래에 표시할 영역
+  const textArea = document.createElement("div");
+  textArea.className = "block-text-area";
+  container.appendChild(textArea);
+
   return container;
 }
 
