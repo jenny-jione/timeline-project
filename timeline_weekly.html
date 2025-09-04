@@ -111,17 +111,20 @@ function renderDay(dateStr, label) {
   const container = document.createElement("div");
   container.className = "day-column";
 
+  // 요일 라벨
   const dayLabel = document.createElement("div");
   dayLabel.className = "day-label";
   dayLabel.textContent = label;
   container.appendChild(dayLabel);
 
+  // 타임라인
   const timelineEl = document.createElement("div");
   timelineEl.className = "timeline";
   container.appendChild(timelineEl);
 
   const filteredData = data.filter(d => d.date === dateStr);
 
+  // 블록 생성
   for (let hour = 7; hour <= 24; hour++) {
     const hourEl = document.createElement("div");
     hourEl.className = "hour";
