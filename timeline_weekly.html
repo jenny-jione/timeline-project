@@ -185,12 +185,12 @@ function renderDay(dateStr, label) {
         const endIndex = timeToIndex(d.end);
         if (blockIndex >= startIndex && blockIndex < endIndex) {
           block.className = "block " + d.type;
-
-          // 툴팁
-          const tooltip = document.createElement("span");
-          tooltip.className = "tooltip";
-          tooltip.textContent = `${d.start}~${d.end}` + d.desc;
-          block.appendChild(tooltip);
+          
+          // // 툴팁
+          // const tooltip = document.createElement("span");
+          // tooltip.className = "tooltip";
+          // tooltip.textContent = `${d.start}~${d.end}` + d.desc;
+          // block.appendChild(tooltip);
 
           // 블록 아래 영역에 표시할 텍스트 이벤트
           block.addEventListener("mouseenter", () => {
