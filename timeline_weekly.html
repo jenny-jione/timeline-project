@@ -118,6 +118,16 @@ const data = [
   {date:"2025-09-03", start:"10:00", end:"11:00", type:"productive", desc:"개인 프로젝트 작업"}
 ];
 
+const categoryNameMap = {
+    'daily': '일상',
+    'schedule': '일정',
+    'focus': '집중',
+    'productive': '생산',
+    'mind': '마음',
+    'waste': '낭비',
+    'sleep': '수면'
+};
+
 function timeToIndex(time) {
   const [h, m] = time.split(":").map(Number);
   return h * 6 + Math.floor(m / 10);
