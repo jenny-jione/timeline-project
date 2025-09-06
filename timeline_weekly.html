@@ -164,10 +164,15 @@ function renderDay(dateStr, label) {
   const filteredData = data.filter(d => d.date === dateStr);
 
   // 블록 생성
-  for (let hour = 7; hour <= 24; hour++) {
+  for (let hour = 5; hour <= 28; hour++) {
     const hourEl = document.createElement("div");
     hourEl.className = "hour";
-    hourEl.textContent = hour;
+    
+    // 24시 이상일 때는 24 빼서 다음날 시간으로 표시
+    const displayHour = hour >= 24 ? hour - 24 : hour;
+    hourEl.textContent = displayHour
+    // hourEl.textContent = hour;
+    
     timelineEl.appendChild(hourEl);
 
     for (let i = 0; i < 6; i++) {
