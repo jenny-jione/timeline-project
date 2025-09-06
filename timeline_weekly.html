@@ -194,7 +194,7 @@ function renderDay(dateStr, label) {
 
           // 블록 아래 영역에 표시할 텍스트 이벤트
           block.addEventListener("mouseenter", () => {
-            textArea.textContent = `${d.start}~${d.end}\n` + d.desc;
+            textArea.textContent = `[${categoryNameMap[d.type]}] ${d.start}~${d.end}\n${d.desc}`;
             // 블록 클래스에 맞춰 텍스트 배경색 적용
             textArea.className = "block-text-area " + d.type; 
           });
