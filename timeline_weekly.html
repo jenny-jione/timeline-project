@@ -139,6 +139,16 @@ function getMonday(d) {
   return date;
 }
 
+function normalizeTime(timeStr) {
+    let [hours, minutes] = timeStr.split(":").map(Number);
+    if (hours >= 24) {
+        hours = hours - 24;
+    }
+    let hh = hours.toString().padStart(2, "0");
+    let mm = minutes.toString().padStart(2, "0");
+    return `${hh}:${mm}`;
+}
+
 function renderDay(dateStr, label) {
   const container = document.createElement("div");
   container.className = "day-column";
@@ -187,7 +197,8 @@ function renderDay(dateStr, label) {
 
           // 블록 아래 영역에 표시할 텍스트 이벤트
           block.addEventListener("mouseenter", () => {
-            textArea.textContent = `[${categoryNameMap[d.type]}] ${d.start}~${d.end}\n${d.desc}`;
+            textArea.textContent = `[${categoryNameMap[d.type]}] ${normalizeTime(d.start)}~${normalizeTime(d.end)}\n${d.desc}`;
+            // textArea.textContent = `[${categoryNameMap[d.type]}] ${d.start}~${d.end}\n${d.desc}`;
             // 블록 클래스에 맞춰 텍스트 배경색 적용
             textArea.className = "block-text-area " + d.type; 
           });
