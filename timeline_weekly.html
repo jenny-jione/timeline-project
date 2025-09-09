@@ -186,6 +186,7 @@ function renderDay(dateStr, label) {
       filteredData.forEach(d => {
         const startIndex = timeToIndex(d.start);
         const endIndex = timeToIndex(d.end);
+
         if (blockIndex >= startIndex && blockIndex < endIndex) {
           block.className = "block " + d.type;
           
