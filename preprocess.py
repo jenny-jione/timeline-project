@@ -37,7 +37,7 @@ with open('timeblock.csv', 'r', encoding='utf-8') as f,\
             row[2] = day_end
 
         # key:value 쌍 생성
-        new_row = [f'{key}:"{value}"' for key, value in zip(h, row)]
+        new_row = [f'{key}:"{value.strip()}"' for key, value in zip(h, row)]
         new_rows.append("  {" + ", ".join(new_row) + "}")
 
     # 전체를 const data 배열로 출력
