@@ -15,7 +15,8 @@ with open('timeblock.csv', 'r', encoding='utf-8') as f,\
         '집중':'focus', 
         '생산':'productive', 
         '마음':'mind',
-        '낭비':'waste'
+        '낭비':'waste',
+        '수면':'sleep'
     }
 
     new_rows = []
