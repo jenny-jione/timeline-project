@@ -2,6 +2,17 @@
 
 import csv
 
+def round_time_to_nearest_10min(h, m, mode):
+    if mode == "off":
+        return h, m
+    """입력된 시간을 가장 가까운 10분 단위로 반올림하여 반환합니다."""
+    m2 = int(round(m / 10) * 10)
+    if m2 == 60:
+        h = (h + 1) % 24
+        m2 = 0
+    return h, m2
+
+
 with open('timeblock.csv', 'r', encoding='utf-8') as f,\
     open('timeblock_array.txt', 'w', encoding='utf-8') as f2:
     rdr = csv.reader(f)
@@ -49,6 +60,10 @@ with open('timeblock.csv', 'r', encoding='utf-8') as f,\
         # 시각을 시간 단위 float로 변환
         sh, sm = map(int, row[1].split(":"))
         eh, em = map(int, row[2].split(":"))
+
+        sh, sm = round_time_to_nearest_10min(sh, sm, "on")
+        eh, em = round_time_to_nearest_10min(eh, em, "on")
+
         start_num = sh + sm/60
         end_num = eh + em/60
 
@@ -58,14 +73,13 @@ with open('timeblock.csv', 'r', encoding='utf-8') as f,\
             start_num += 24
         if end_num < max_hour:
             end_num += 24
-        
 
         # max_hour 갱신
         max_hour = max(max_hour, end_num)
 
         # 다시 HH:MM 문자열로 변환
-        row[1] = f"{int(start_num):02d}:{int((start_num-int(start_num))*60):02d}"
-        row[2] = f"{int(end_num):02d}:{int((end_num-int(end_num))*60):02d}"
+        row[1] = f"{sh:02d}:{sm:02d}"
+        row[2] = f"{eh:02d}:{em:02d}"
 
         # key:value 쌍 생성
         new_row = [f'{key}:"{value.strip()}"' for key, value in zip(h, row)]
